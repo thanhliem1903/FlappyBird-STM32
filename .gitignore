@@ -1,0 +1,11 @@
+# Bỏ qua thư mục build và file nhị phân
+build/
+*.o
+*.elf
+*.hex
+*.bin
+*.map
+
+# Bỏ qua cấu hình cá nhân của IDE
+.vscode/
+.mxproject
