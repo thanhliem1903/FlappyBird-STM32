@@ -6,7 +6,7 @@
 # Generic Makefile (based on gcc)
 #
 # ChangeLog :
-#	2017-02-10 - Several enhancements + project update mode
+#    2017-02-10 - Several enhancements + project update mode
 #   2015-07-22 - first version
 # ------------------------------------------------
 
@@ -15,7 +15,6 @@
 ######################################
 TARGET = FlappyBird_STM32
 
-
 ######################################
 # building variables
 ######################################
@@ -23,7 +22,6 @@ TARGET = FlappyBird_STM32
 DEBUG = 1
 # optimization
 OPT = -Og
-
 
 #######################################
 # paths
@@ -71,6 +69,7 @@ Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
 Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c \
 Core/Src/sysmem.c \
 Core/Src/syscalls.c
+
 C_SOURCES += $(wildcard bsp/*.c)
 C_SOURCES += $(wildcard hal/*.c)
 C_SOURCES += $(wildcard app/*.c)
@@ -83,8 +82,6 @@ startup_stm32f103xb.s
 
 # ASMM sources
 ASMM_SOURCES = 
-
-
 
 #######################################
 # binaries
@@ -117,7 +114,6 @@ CPU = -mcpu=cortex-m3
 
 # float-abi
 
-
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 
@@ -129,7 +125,6 @@ AS_DEFS =
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F103xB
-
 
 # AS includes
 AS_INCLUDES =  \
@@ -151,10 +146,10 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
 -IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
 -Ibsp \
 -Ihal \
--Iapp
+-Iapp \
 -Ihal/inc \
 -Iapp/inc
 
@@ -167,10 +162,8 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
-
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
-
 
 #######################################
 # LDFLAGS
@@ -185,7 +178,6 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-
 
 #######################################
 # build the application
@@ -204,6 +196,7 @@ $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
+
 $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
@@ -213,12 +206,12 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
-	
+    
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) $< $@	
-	
+	$(BIN) $< $@    
+    
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir $@        
 
 #######################################
 # clean up
@@ -232,3 +225,8 @@ clean:
 -include $(wildcard $(BUILD_DIR)/*.d)
 
 # *** EOF ***
+#######################################
+# flash via st-flash or openocd
+#######################################
+flash: all
+	st-flash write build/$(TARGET).bin 0x08000000

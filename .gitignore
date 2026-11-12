@@ -9,3 +9,20 @@ build/
 # Bỏ qua cấu hình cá nhân của IDE
 .vscode/
 .mxproject
+
+# Build files
+build/
+Debug/
+Release/
+*.o
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+*.d
+
+# Temporary files
+*.bak
+*.swp
+.metadata/
